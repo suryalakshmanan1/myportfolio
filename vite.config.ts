@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/myportfolio/',  // Must exactly match your repo name
+  base: './',  // Changed to relative path for better compatibility
   plugins: [react()],
   resolve: {
     alias: {
@@ -17,8 +17,18 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: undefined
-      }
-    }
+        manualChunks: undefined,
+        assetFileNames: (assetInfo) => {
+          const name = assetInfo.name || '';
+          let extType = name.split('.').at(1) || 'asset';
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+            extType = 'img';
+          }
+          return `assets/${extType}/[name]-[hash][extname]`;
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+      },
+    },
   },
 });
